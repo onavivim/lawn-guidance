@@ -86,7 +86,7 @@ const ProductWizard = () => {
           <img 
             src={stigaLogo} 
             alt="STIGA" 
-            className="h-14 md:h-16 mb-2"
+            className="h-20 md:h-24 mb-2"
           />
           <p className="text-lg md:text-xl font-medium text-foreground/80">
             כל גינה והסטיגה שלה!
