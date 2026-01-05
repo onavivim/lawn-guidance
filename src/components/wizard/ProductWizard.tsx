@@ -73,23 +73,28 @@ const ProductWizard = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-stiga-grey-10">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 bg-gradient-to-br from-stiga-blue-tech via-background to-secondary opacity-50" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      
       {/* Header */}
-      <header className="pt-6 pb-4 px-4">
+      <header className="relative pt-6 pb-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-center">
-          <div className="text-3xl font-bold text-stiga-dark-deep tracking-wider">
+          <div className="text-3xl font-bold text-primary tracking-wider">
             STIGA
           </div>
         </div>
       </header>
 
       {/* Progress */}
-      <div className="px-4 py-4">
+      <div className="relative px-4 py-4">
         <WizardProgress currentStep={state.currentStep} totalSteps={TOTAL_STEPS} />
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col px-4 pb-8">
+      <main className="relative flex-1 flex flex-col px-4 pb-8">
         <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
           {/* Step Header */}
           <div className={cn(

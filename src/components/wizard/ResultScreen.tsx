@@ -76,8 +76,13 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-hero">
-      <div className="max-w-2xl w-full">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 bg-gradient-to-br from-stiga-blue-tech via-background to-secondary opacity-50" />
+      <div className="absolute top-20 right-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-step-complete/10 rounded-full blur-3xl" />
+      
+      <div className="relative max-w-2xl w-full">
         {/* Success Icon */}
         <div className="flex justify-center mb-6 opacity-0 animate-scale-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
           <div className="w-20 h-20 rounded-full bg-step-complete flex items-center justify-center shadow-glow">
@@ -87,7 +92,7 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
 
         {/* Main Card */}
         <div 
-          className="bg-card rounded-2xl shadow-card-hover p-8 opacity-0 animate-slide-up" 
+          className="bg-card/80 backdrop-blur-md border border-border rounded-2xl shadow-card-hover p-8 opacity-0 animate-slide-up" 
           style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
         >
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-card-foreground">
@@ -98,9 +103,9 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
           </p>
 
           {/* Recommendation */}
-          <div className="bg-stiga-grey-10 rounded-xl p-6 mb-8">
+          <div className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 mb-8">
             <p className="text-sm text-muted-foreground mb-2 text-center">הקטגוריה המומלצת</p>
-            <h3 className="text-2xl md:text-3xl font-bold text-center text-stiga-dark-deep">
+            <h3 className="text-2xl md:text-3xl font-bold text-center text-primary">
               {recommendation}
             </h3>
           </div>
@@ -135,7 +140,7 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
 };
 
 const SummaryItem = ({ label, value }: { label: string; value: string }) => (
-  <div className="text-center p-3 bg-card rounded-lg border border-border">
+  <div className="text-center p-3 bg-secondary/50 backdrop-blur-sm rounded-lg border border-border">
     <p className="text-xs text-muted-foreground mb-1">{label}</p>
     <p className="font-bold text-foreground">{value}</p>
   </div>
