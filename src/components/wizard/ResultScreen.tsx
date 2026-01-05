@@ -65,10 +65,10 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
   const sizeRecommendation = getSizeRecommendation(state.gardenSize);
 
   const handleShare = async () => {
-    const text = `מצאתי את המכסחת המושלמת עבורי ב-STIGA: ${recommendation}`;
+    const text = `כל גינה והסטיגה שלה! מצאתי את הפתרון המושלם לגינה שלי: ${recommendation}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'המלצת STIGA', text });
+        await navigator.share({ title: 'STIGA - כל גינה והסטיגה שלה!', text });
       } catch (err) {
         console.log('Share cancelled');
       }
@@ -95,8 +95,9 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
           className="bg-card/80 backdrop-blur-md border border-border rounded-2xl shadow-card-hover p-8 opacity-0 animate-slide-up" 
           style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
         >
+          <p className="text-primary font-medium text-center mb-2">כל גינה והסטיגה שלה!</p>
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-card-foreground">
-            מצאנו לך את ההתאמה המושלמת!
+            מצאנו את הפתרון לגינה שלך!
           </h2>
           <p className="text-muted-foreground text-center mb-8">
             {sizeRecommendation}
@@ -104,7 +105,7 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
 
           {/* Recommendation */}
           <div className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 mb-8">
-            <p className="text-sm text-muted-foreground mb-2 text-center">הקטגוריה המומלצת</p>
+            <p className="text-sm text-muted-foreground mb-2 text-center">הפתרון המומלץ לגינה שלך</p>
             <h3 className="text-2xl md:text-3xl font-bold text-center text-primary">
               {recommendation}
             </h3>
