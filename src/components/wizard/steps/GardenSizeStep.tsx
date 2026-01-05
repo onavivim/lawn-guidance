@@ -4,6 +4,13 @@ import { Button } from '@/components/ui/button';
 import { gardenSizePresets } from '@/data/wizardData';
 import { cn } from '@/lib/utils';
 
+// Import icons
+import lawnSmallIcon from '@/assets/icons/lawn-small.png';
+import lawnMediumIcon from '@/assets/icons/lawn-medium.png';
+import lawnLargeIcon from '@/assets/icons/lawn-large.png';
+
+const presetIcons = [lawnSmallIcon, lawnMediumIcon, lawnLargeIcon];
+
 interface GardenSizeStepProps {
   value: number | null;
   onChange: (value: number) => void;
@@ -66,21 +73,28 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
         </div>
       </div>
 
-      {/* Presets */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Presets with Icons */}
+      <div className="grid grid-cols-3 gap-4">
         {gardenSizePresets.map((preset, index) => (
           <Button
             key={preset.label}
             variant={activePreset === index ? "wizardActive" : "wizard"}
-            size="sm"
             onClick={() => handlePresetClick(preset, index)}
             className={cn(
-              "flex flex-col h-auto py-3 opacity-0 animate-slide-up backdrop-blur-sm",
+              "flex flex-col h-auto py-4 px-3 opacity-0 animate-slide-up backdrop-blur-sm",
               activePreset === index && "ring-2 ring-primary ring-offset-2 ring-offset-background"
             )}
             style={{ animationDelay: `${200 + index * 100}ms`, animationFillMode: 'forwards' }}
           >
-            <span className="font-bold">{preset.label}</span>
+            <img 
+              src={presetIcons[index]} 
+              alt={preset.label}
+              className={cn(
+                "w-16 h-16 object-contain mb-2 transition-all duration-300",
+                activePreset === index ? "brightness-0 invert" : ""
+              )}
+            />
+            <span className="font-bold text-base">{preset.label}</span>
             <span className="text-xs opacity-75">{preset.description}</span>
           </Button>
         ))}

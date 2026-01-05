@@ -1,13 +1,18 @@
-import { Battery, Fuel, Plug, Hand } from 'lucide-react';
 import { PowerType } from '@/types/wizard';
 import { powerTypeOptions } from '@/data/wizardData';
 import OptionCard from '../OptionCard';
 
-const iconMap = {
-  Battery,
-  Fuel,
-  Plug,
-  Hand,
+// Import icons
+import batteryIcon from '@/assets/icons/battery.png';
+import petrolIcon from '@/assets/icons/petrol.png';
+import electricIcon from '@/assets/icons/electric.png';
+import manualIcon from '@/assets/icons/manual.png';
+
+const iconMap: Record<string, string> = {
+  Battery: batteryIcon,
+  Fuel: petrolIcon,
+  Plug: electricIcon,
+  Hand: manualIcon,
 };
 
 interface PowerTypeStepProps {
@@ -23,7 +28,7 @@ const PowerTypeStep = ({ value, onChange }: PowerTypeStepProps) => {
           key={option.value}
           label={option.label}
           description={option.description}
-          icon={iconMap[option.icon as keyof typeof iconMap]}
+          iconSrc={iconMap[option.icon as keyof typeof iconMap]}
           isSelected={value === option.value}
           onClick={() => onChange(option.value)}
           delay={index * 100}

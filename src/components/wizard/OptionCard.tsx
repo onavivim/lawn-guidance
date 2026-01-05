@@ -5,7 +5,8 @@ import { cn } from '@/lib/utils';
 interface OptionCardProps {
   label: string;
   description: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  iconSrc?: string;
   isSelected: boolean;
   onClick: () => void;
   delay?: number;
@@ -14,7 +15,8 @@ interface OptionCardProps {
 const OptionCard = ({ 
   label, 
   description, 
-  icon: Icon, 
+  icon: Icon,
+  iconSrc,
   isSelected, 
   onClick,
   delay = 0 
@@ -41,10 +43,21 @@ const OptionCard = ({
         "w-16 h-16 rounded-xl flex items-center justify-center mb-3 transition-all duration-300",
         isSelected ? "bg-primary-foreground/20" : "bg-secondary group-hover:bg-primary/20"
       )}>
-        <Icon className={cn(
-          "w-8 h-8 transition-colors duration-300",
-          isSelected ? "text-primary-foreground" : "text-foreground group-hover:text-primary"
-        )} />
+        {iconSrc ? (
+          <img 
+            src={iconSrc} 
+            alt={label} 
+            className={cn(
+              "w-12 h-12 object-contain transition-all duration-300",
+              isSelected ? "brightness-0 invert" : "group-hover:scale-110"
+            )}
+          />
+        ) : Icon ? (
+          <Icon className={cn(
+            "w-8 h-8 transition-colors duration-300",
+            isSelected ? "text-primary-foreground" : "text-foreground group-hover:text-primary"
+          )} />
+        ) : null}
       </div>
       
       <span className={cn(
