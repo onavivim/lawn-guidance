@@ -10,7 +10,7 @@ import PowerTypeStep from './steps/PowerTypeStep';
 import DriveTypeStep from './steps/DriveTypeStep';
 import ResultScreen from './ResultScreen';
 import { cn } from '@/lib/utils';
-import stigaLogo from '@/assets/stiga-logo.png';
+import stigaLogo from '@/assets/stiga-logo-dark.jpg';
 
 const TOTAL_STEPS = 4;
 
@@ -86,7 +86,7 @@ const ProductWizard = () => {
           <img 
             src={stigaLogo} 
             alt="STIGA" 
-            className="h-10 md:h-12 mb-2"
+            className="h-12 md:h-14 rounded-lg mb-2"
           />
           <p className="text-lg md:text-xl font-medium text-foreground/80">
             כל גינה והסטיגה שלה!
