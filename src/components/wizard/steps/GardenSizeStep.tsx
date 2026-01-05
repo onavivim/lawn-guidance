@@ -89,10 +89,7 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
             <img 
               src={presetIcons[index]} 
               alt={preset.label}
-              className={cn(
-                "w-16 h-16 object-contain mb-2 transition-all duration-300",
-                activePreset === index ? "brightness-0 invert" : ""
-              )}
+              className="w-16 h-16 object-contain mb-2 transition-all duration-300"
             />
             <span className="font-bold text-base">{preset.label}</span>
             <span className="text-xs opacity-75">{preset.description}</span>

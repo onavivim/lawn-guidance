@@ -47,10 +47,7 @@ const OptionCard = ({
           <img 
             src={iconSrc} 
             alt={label} 
-            className={cn(
-              "w-12 h-12 object-contain transition-all duration-300",
-              isSelected ? "brightness-0 invert" : "group-hover:scale-110"
-            )}
+            className="w-12 h-12 object-contain transition-all duration-300 group-hover:scale-110"
           />
         ) : Icon ? (
           <Icon className={cn(
