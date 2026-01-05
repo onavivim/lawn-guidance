@@ -10,7 +10,7 @@ import PowerTypeStep from './steps/PowerTypeStep';
 import DriveTypeStep from './steps/DriveTypeStep';
 import ResultScreen from './ResultScreen';
 import { cn } from '@/lib/utils';
-import stigaLogo from '@/assets/stiga-logo-dark.jpg';
+import stigaLogo from '@/assets/stiga-logo.png';
 
 const TOTAL_STEPS = 4;
 
@@ -86,7 +86,7 @@ const ProductWizard = () => {
           <img 
             src={stigaLogo} 
             alt="STIGA" 
-            className="h-12 md:h-14 rounded-lg mb-2"
+            className="h-14 md:h-16 mb-2"
           />
           <p className="text-lg md:text-xl font-medium text-foreground/80">
             כל גינה והסטיגה שלה!
@@ -134,19 +134,22 @@ const ProductWizard = () => {
             {state.currentStep === 2 && (
               <GardenSizeStep 
                 value={state.gardenSize} 
-                onChange={(value: number) => updateState('gardenSize', value)} 
+                onChange={(value: number) => updateState('gardenSize', value)}
+                userType={state.userType}
               />
             )}
             {state.currentStep === 3 && (
               <PowerTypeStep 
                 value={state.powerType} 
-                onChange={(value: PowerType) => updateState('powerType', value)} 
+                onChange={(value: PowerType) => updateState('powerType', value)}
+                userType={state.userType}
               />
             )}
             {state.currentStep === 4 && (
               <DriveTypeStep 
                 value={state.driveType} 
-                onChange={(value: DriveType) => updateState('driveType', value)} 
+                onChange={(value: DriveType) => updateState('driveType', value)}
+                userType={state.userType}
               />
             )}
           </div>

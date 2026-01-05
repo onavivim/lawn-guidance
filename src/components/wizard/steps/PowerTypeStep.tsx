@@ -1,4 +1,4 @@
-import { PowerType } from '@/types/wizard';
+import { PowerType, UserType } from '@/types/wizard';
 import { powerTypeOptions } from '@/data/wizardData';
 import OptionCard from '../OptionCard';
 
@@ -18,12 +18,20 @@ const iconMap: Record<string, string> = {
 interface PowerTypeStepProps {
   value: PowerType | null;
   onChange: (value: PowerType) => void;
+  userType: UserType | null;
 }
 
-const PowerTypeStep = ({ value, onChange }: PowerTypeStepProps) => {
+const PowerTypeStep = ({ value, onChange, userType }: PowerTypeStepProps) => {
+  const isProfessional = userType === 'professional';
+  
+  // Filter options for professionals (remove electric and manual)
+  const availableOptions = isProfessional 
+    ? powerTypeOptions.filter(opt => opt.value !== 'electric' && opt.value !== 'manual')
+    : powerTypeOptions;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-      {powerTypeOptions.map((option, index) => (
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${isProfessional ? 'lg:grid-cols-2 max-w-2xl' : 'lg:grid-cols-4 max-w-4xl'} gap-4 mx-auto`}>
+      {availableOptions.map((option, index) => (
         <OptionCard
           key={option.value}
           label={option.label}

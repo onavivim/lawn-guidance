@@ -1,6 +1,7 @@
-import { DriveType } from '@/types/wizard';
+import { DriveType, UserType } from '@/types/wizard';
 import { driveTypeOptions } from '@/data/wizardData';
 import OptionCard from '../OptionCard';
+import { Bot, Car } from 'lucide-react';
 
 // Import icons
 import pushIcon from '@/assets/icons/push.png';
@@ -18,12 +19,20 @@ const iconMap: Record<string, string> = {
 interface DriveTypeStepProps {
   value: DriveType | null;
   onChange: (value: DriveType) => void;
+  userType: UserType | null;
 }
 
-const DriveTypeStep = ({ value, onChange }: DriveTypeStepProps) => {
+const DriveTypeStep = ({ value, onChange, userType }: DriveTypeStepProps) => {
+  const isProfessional = userType === 'professional';
+  
+  // Filter options for professionals (remove robot)
+  const availableOptions = isProfessional 
+    ? driveTypeOptions.filter(opt => opt.value !== 'robot')
+    : driveTypeOptions;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-      {driveTypeOptions.map((option, index) => (
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${isProfessional ? 'lg:grid-cols-3 max-w-3xl' : 'lg:grid-cols-4 max-w-4xl'} gap-4 mx-auto`}>
+      {availableOptions.map((option, index) => (
         <OptionCard
           key={option.value}
           label={option.label}
