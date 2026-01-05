@@ -150,6 +150,7 @@ const ProductWizard = () => {
                 value={state.driveType} 
                 onChange={(value: DriveType) => updateState('driveType', value)}
                 userType={state.userType}
+                powerType={state.powerType}
               />
             )}
           </div>

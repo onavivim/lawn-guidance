@@ -1,7 +1,6 @@
-import { DriveType, UserType } from '@/types/wizard';
+import { DriveType, UserType, PowerType } from '@/types/wizard';
 import { driveTypeOptions } from '@/data/wizardData';
 import OptionCard from '../OptionCard';
-import { Bot, Car } from 'lucide-react';
 
 // Import icons
 import pushIcon from '@/assets/icons/push.png';
@@ -20,18 +19,44 @@ interface DriveTypeStepProps {
   value: DriveType | null;
   onChange: (value: DriveType) => void;
   userType: UserType | null;
+  powerType: PowerType | null;
 }
 
-const DriveTypeStep = ({ value, onChange, userType }: DriveTypeStepProps) => {
+const DriveTypeStep = ({ value, onChange, userType, powerType }: DriveTypeStepProps) => {
   const isProfessional = userType === 'professional';
   
-  // Filter options for professionals (remove robot)
-  const availableOptions = isProfessional 
-    ? driveTypeOptions.filter(opt => opt.value !== 'robot')
-    : driveTypeOptions;
+  // Filter options based on user type and power type
+  let availableOptions = driveTypeOptions;
+  
+  // Professional filtering (remove robot)
+  if (isProfessional) {
+    availableOptions = availableOptions.filter(opt => opt.value !== 'robot');
+  }
+  
+  // Power type filtering
+  if (powerType === 'electric') {
+    // Electric: remove robots and ride-on
+    availableOptions = availableOptions.filter(opt => 
+      opt.value !== 'robot' && opt.value !== 'ride-on'
+    );
+  } else if (powerType === 'petrol') {
+    // Petrol: remove robots
+    availableOptions = availableOptions.filter(opt => opt.value !== 'robot');
+  } else if (powerType === 'manual') {
+    // Manual: only push
+    availableOptions = availableOptions.filter(opt => opt.value === 'push');
+  }
+
+  const getGridClass = () => {
+    const count = availableOptions.length;
+    if (count === 1) return 'grid-cols-1 max-w-xs';
+    if (count === 2) return 'grid-cols-1 sm:grid-cols-2 max-w-2xl';
+    if (count === 3) return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-3xl';
+    return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl';
+  };
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${isProfessional ? 'lg:grid-cols-3 max-w-3xl' : 'lg:grid-cols-4 max-w-4xl'} gap-4 mx-auto`}>
+    <div className={`grid ${getGridClass()} gap-4 mx-auto`}>
       {availableOptions.map((option, index) => (
         <OptionCard
           key={option.value}
