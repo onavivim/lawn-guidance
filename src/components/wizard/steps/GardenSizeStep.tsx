@@ -1,0 +1,95 @@
+import { useState, useEffect } from 'react';
+import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
+import { gardenSizePresets } from '@/data/wizardData';
+import { cn } from '@/lib/utils';
+
+interface GardenSizeStepProps {
+  value: number | null;
+  onChange: (value: number) => void;
+}
+
+const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
+  const [localValue, setLocalValue] = useState(value || 300);
+  const [activePreset, setActivePreset] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (value) {
+      setLocalValue(value);
+      const preset = gardenSizePresets.find(p => p.value === value);
+      if (preset) {
+        setActivePreset(gardenSizePresets.indexOf(preset));
+      }
+    }
+  }, [value]);
+
+  const handleSliderChange = (values: number[]) => {
+    setLocalValue(values[0]);
+    setActivePreset(null);
+    onChange(values[0]);
+  };
+
+  const handlePresetClick = (preset: typeof gardenSizePresets[0], index: number) => {
+    setLocalValue(preset.value);
+    setActivePreset(index);
+    onChange(preset.value);
+  };
+
+  const getDisplaySize = () => {
+    if (localValue >= 1000) {
+      return `${(localValue / 1000).toFixed(1)} דונם`;
+    }
+    return `${localValue} מ"ר`;
+  };
+
+  return (
+    <div className="max-w-xl mx-auto space-y-8 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
+      {/* Size Display */}
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center bg-stiga-grey-10 rounded-2xl px-8 py-6 shadow-card">
+          <span className="text-5xl md:text-6xl font-bold text-stiga-dark-deep">
+            {getDisplaySize()}
+          </span>
+        </div>
+      </div>
+
+      {/* Slider */}
+      <div className="px-4">
+        <Slider
+          value={[localValue]}
+          onValueChange={handleSliderChange}
+          min={50}
+          max={5000}
+          step={50}
+          className="w-full"
+        />
+        <div className="flex justify-between mt-2 text-sm text-muted-foreground">
+          <span>50 מ"ר</span>
+          <span>5 דונם</span>
+        </div>
+      </div>
+
+      {/* Presets */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {gardenSizePresets.map((preset, index) => (
+          <Button
+            key={preset.label}
+            variant={activePreset === index ? "wizardActive" : "wizard"}
+            size="sm"
+            onClick={() => handlePresetClick(preset, index)}
+            className={cn(
+              "flex flex-col h-auto py-3 opacity-0 animate-slide-up",
+              activePreset === index && "ring-2 ring-primary ring-offset-2"
+            )}
+            style={{ animationDelay: `${200 + index * 100}ms`, animationFillMode: 'forwards' }}
+          >
+            <span className="font-bold">{preset.label}</span>
+            <span className="text-xs opacity-75">{preset.description}</span>
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default GardenSizeStep;
