@@ -16,10 +16,9 @@ export const userTypeOptions: StepOption<UserType>[] = [
 ];
 
 export const gardenSizePresets: GardenSizePreset[] = [
-  { label: 'קטנה', value: 100, description: 'עד 100 מ"ר' },
-  { label: 'בינונית', value: 300, description: '100-500 מ"ר' },
-  { label: 'גדולה', value: 800, description: '500-1000 מ"ר' },
-  { label: 'מאוד גדולה', value: 2000, description: 'מעל 1000 מ"ר' },
+  { label: 'קטנה', value: 150, description: 'עד 300 מ"ר' },
+  { label: 'בינונית', value: 750, description: '300-1200 מ"ר' },
+  { label: 'גדולה', value: 1500, description: 'מעל 1200 מ"ר' },
 ];
 
 export const powerTypeOptions: StepOption<PowerType>[] = [

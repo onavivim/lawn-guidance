@@ -36,9 +36,6 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
   };
 
   const getDisplaySize = () => {
-    if (localValue >= 1000) {
-      return `${(localValue / 1000).toFixed(1)} דונם`;
-    }
     return `${localValue} מ"ר`;
   };
 
@@ -54,23 +51,23 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
       </div>
 
       {/* Slider */}
-      <div className="px-4">
+      <div className="px-4" dir="ltr">
         <Slider
           value={[localValue]}
           onValueChange={handleSliderChange}
           min={50}
-          max={5000}
+          max={2000}
           step={50}
           className="w-full"
         />
         <div className="flex justify-between mt-2 text-sm text-muted-foreground">
           <span>50 מ"ר</span>
-          <span>5 דונם</span>
+          <span>2000 מ"ר</span>
         </div>
       </div>
 
       {/* Presets */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {gardenSizePresets.map((preset, index) => (
           <Button
             key={preset.label}
