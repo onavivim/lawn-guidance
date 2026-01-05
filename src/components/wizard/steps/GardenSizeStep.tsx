@@ -46,8 +46,8 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
     <div className="max-w-xl mx-auto space-y-8 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
       {/* Size Display */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center bg-stiga-grey-10 rounded-2xl px-8 py-6 shadow-card">
-          <span className="text-5xl md:text-6xl font-bold text-stiga-dark-deep">
+        <div className="inline-flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-2xl px-8 py-6 shadow-card">
+          <span className="text-5xl md:text-6xl font-bold text-primary">
             {getDisplaySize()}
           </span>
         </div>
@@ -78,8 +78,8 @@ const GardenSizeStep = ({ value, onChange }: GardenSizeStepProps) => {
             size="sm"
             onClick={() => handlePresetClick(preset, index)}
             className={cn(
-              "flex flex-col h-auto py-3 opacity-0 animate-slide-up",
-              activePreset === index && "ring-2 ring-primary ring-offset-2"
+              "flex flex-col h-auto py-3 opacity-0 animate-slide-up backdrop-blur-sm",
+              activePreset === index && "ring-2 ring-primary ring-offset-2 ring-offset-background"
             )}
             style={{ animationDelay: `${200 + index * 100}ms`, animationFillMode: 'forwards' }}
           >
