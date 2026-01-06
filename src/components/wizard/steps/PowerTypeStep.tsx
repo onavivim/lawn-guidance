@@ -24,7 +24,7 @@ interface PowerTypeStepProps {
 
 const PowerTypeStep = ({ value, onChange, userType, gardenSize }: PowerTypeStepProps) => {
   const isProfessional = userType === 'professional';
-  const isLargeGarden = gardenSize !== null && gardenSize >= 1200;
+  const isLargeGarden = gardenSize !== null && gardenSize >= 1500;
   
   // Filter options based on user type and garden size
   let availableOptions = powerTypeOptions;
