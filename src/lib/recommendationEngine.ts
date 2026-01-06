@@ -11,7 +11,7 @@ const powerTypeMapping: Record<PowerType, Product['powerType'][]> = {
   battery: ['battery'],
   petrol: ['petrol'],
   electric: ['electric'],
-  manual: ['electric', 'battery'], // Manual mowers don't exist in catalog, fallback to electric/battery push
+  manual: ['manual'],
 };
 
 // Map wizard drive types to product drive types
