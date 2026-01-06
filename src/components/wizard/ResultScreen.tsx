@@ -1,38 +1,12 @@
-import { CheckCircle, ArrowLeft, Share2, RefreshCw } from 'lucide-react';
+import { CheckCircle, ArrowLeft, Share2, RefreshCw, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
-import { cn } from '@/lib/utils';
+import { findBestProduct, RecommendationResult } from '@/lib/recommendationEngine';
 
 interface ResultScreenProps {
   state: WizardState;
   onRestart: () => void;
 }
-
-const categoryMapping: Record<string, string> = {
-  'homeowner-battery-robot': 'מכסחות רובוטיות לבית',
-  'homeowner-battery-push': 'מכסחות סוללה ידניות',
-  'homeowner-battery-self-propelled': 'מכסחות סוללה הנעה עצמית',
-  'homeowner-electric-push': 'מכסחות חשמליות',
-  'homeowner-petrol-push': 'מכסחות בנזין קטנות',
-  'homeowner-petrol-self-propelled': 'מכסחות בנזין הנעה עצמית',
-  'homeowner-manual-push': 'מכסחות ידניות',
-  'professional-petrol-ride-on': 'טרקטורוני כיסוח מקצועיים',
-  'professional-petrol-self-propelled': 'מכסחות בנזין מקצועיות',
-  'professional-battery-self-propelled': 'מכסחות סוללה מקצועיות',
-};
-
-const getRecommendation = (state: WizardState) => {
-  const key = `${state.userType}-${state.powerType}-${state.driveType}`;
-  return categoryMapping[key] || 'מכסחות דשא STIGA';
-};
-
-const getSizeRecommendation = (size: number | null) => {
-  if (!size) return '';
-  if (size <= 200) return 'מומלץ לך דגם קומפקטי וקל לתפעול';
-  if (size <= 500) return 'מומלץ לך דגם בינוני עם יעילות גבוהה';
-  if (size <= 1000) return 'מומלץ לך דגם חזק עם רוחב כיסוח גדול';
-  return 'מומלץ לך רכב כיסוח או רובוט מתקדם';
-};
 
 const translateUserType = (type: UserType | null) => {
   if (type === 'homeowner') return 'בעל בית';
@@ -55,23 +29,33 @@ const translateDriveType = (type: DriveType | null) => {
     push: 'דחיפה',
     'self-propelled': 'הנעה עצמית',
     robot: 'רובוט',
-    'ride-on': 'רכיבה',
+    'ride-on': 'טרקטורון',
   };
   return type ? map[type] : '';
 };
 
 const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
-  const recommendation = getRecommendation(state);
-  const sizeRecommendation = getSizeRecommendation(state.gardenSize);
+  const recommendation: RecommendationResult | null = findBestProduct(state);
 
   const handleShare = async () => {
-    const text = `כל גינה והסטיגה שלה! מצאתי את הפתרון המושלם לגינה שלי: ${recommendation}`;
+    const productName = recommendation?.product.name || 'מכסחת דשא STIGA';
+    const text = `כל גינה והסטיגה שלה! מצאתי את הפתרון המושלם לגינה שלי: ${productName}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'STIGA - כל גינה והסטיגה שלה!', text });
+        await navigator.share({ 
+          title: 'STIGA - כל גינה והסטיגה שלה!', 
+          text,
+          url: recommendation?.product.link 
+        });
       } catch (err) {
         console.log('Share cancelled');
       }
+    }
+  };
+
+  const handleViewProduct = () => {
+    if (recommendation?.product.link) {
+      window.open(recommendation.product.link, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -97,19 +81,29 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
         >
           <p className="text-primary font-medium text-center mb-2">כל גינה והסטיגה שלה!</p>
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-card-foreground">
-            מצאנו את הפתרון לגינה שלך!
+            מצאנו את הפתרון המושלם לגינה שלך!
           </h2>
-          <p className="text-muted-foreground text-center mb-8">
-            {sizeRecommendation}
-          </p>
+          
+          {recommendation && (
+            <p className="text-muted-foreground text-center mb-8">
+              {recommendation.reason}
+            </p>
+          )}
 
-          {/* Recommendation */}
-          <div className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 mb-8">
-            <p className="text-sm text-muted-foreground mb-2 text-center">הפתרון המומלץ לגינה שלך</p>
-            <h3 className="text-2xl md:text-3xl font-bold text-center text-primary">
-              {recommendation}
-            </h3>
-          </div>
+          {/* Product Recommendation */}
+          {recommendation && (
+            <div className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 mb-8">
+              <p className="text-sm text-muted-foreground mb-2 text-center">הפתרון המומלץ לגינה שלך</p>
+              <h3 className="text-xl md:text-2xl font-bold text-center text-primary mb-3">
+                {recommendation.product.name}
+              </h3>
+              <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+                <span>עד {recommendation.product.maxArea} מ"ר</span>
+                <span>•</span>
+                <span>{translatePowerType(recommendation.product.powerType as PowerType)}</span>
+              </div>
+            </div>
+          )}
 
           {/* Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -121,9 +115,15 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="cta" size="lg" className="flex-1">
-              <ArrowLeft className="w-5 h-5" />
-              צפה במוצרים
+            <Button 
+              variant="cta" 
+              size="lg" 
+              className="flex-1"
+              onClick={handleViewProduct}
+              disabled={!recommendation}
+            >
+              <ExternalLink className="w-5 h-5" />
+              צפה במוצר באתר
             </Button>
             <Button variant="outline" size="lg" onClick={handleShare}>
               <Share2 className="w-5 h-5" />
