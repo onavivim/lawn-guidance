@@ -74,58 +74,30 @@ export function findBestProduct(state: WizardState): RecommendationResult | null
     };
   }
 
-  // Score candidates based on how well they match the garden size
-  const scored = candidates.map(product => {
-    let score = 100;
-    let reason = '';
-
-    // Perfect match: product can handle the garden with some margin
-    const margin = product.maxArea - gardenSize;
-    const marginPercentage = (margin / gardenSize) * 100;
-
-    if (margin < 0) {
-      // Product is too small
-      score -= 40;
-      reason = 'מתאים לשטח קטן יותר, אך עדיין אפשרי';
-    } else if (marginPercentage <= 20) {
-      // Perfect match - product is just right (up to 20% larger)
-      score = 100;
-      reason = 'התאמה מושלמת לגודל הגינה שלך';
-    } else if (marginPercentage <= 50) {
-      // Good match - product has some extra capacity
-      score = 90;
-      reason = 'מתאים מצוין עם יכולת גדילה';
-    } else if (marginPercentage <= 100) {
-      // Decent match - product is somewhat oversized
-      score = 75;
-      reason = 'מתאים לגינה עם מרווח נוח';
-    } else {
-      // Product is much larger than needed
-      score = 60;
-      reason = 'חזק מהנדרש, מתאים גם לשטחים גדולים יותר';
-    }
-
-    return { product, matchScore: score, reason };
+  // Find the product with the closest maxArea to the garden size
+  const sorted = candidates.sort((a, b) => {
+    const aDiff = Math.abs(a.maxArea - gardenSize);
+    const bDiff = Math.abs(b.maxArea - gardenSize);
+    return aDiff - bDiff;
   });
 
-  // Sort by score (highest first), then by how close the capacity is to the garden size
-  scored.sort((a, b) => {
-    if (b.matchScore !== a.matchScore) {
-      return b.matchScore - a.matchScore;
-    }
-    // If same score, prefer the one closest to garden size (but still >= garden size)
-    const aMargin = a.product.maxArea - gardenSize;
-    const bMargin = b.product.maxArea - gardenSize;
-    
-    // Prefer products that can handle the garden
-    if (aMargin >= 0 && bMargin < 0) return -1;
-    if (bMargin >= 0 && aMargin < 0) return 1;
-    
-    // Among suitable products, prefer the one with smaller margin
-    return Math.abs(aMargin) - Math.abs(bMargin);
-  });
+  const bestProduct = sorted[0];
+  const diff = bestProduct.maxArea - gardenSize;
+  
+  let reason = '';
+  if (Math.abs(diff) <= 100) {
+    reason = 'התאמה מושלמת לגודל הגינה שלך';
+  } else if (diff > 0) {
+    reason = 'מתאים מצוין עם יכולת גדילה';
+  } else {
+    reason = 'הפתרון הקרוב ביותר לצרכים שלך';
+  }
 
-  return scored[0];
+  return {
+    product: bestProduct,
+    matchScore: 100 - Math.min(50, Math.abs(diff) / 100),
+    reason,
+  };
 }
 
 export function getAlternativeProducts(

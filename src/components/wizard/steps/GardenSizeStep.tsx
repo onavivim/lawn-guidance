@@ -66,7 +66,7 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
   };
 
   const sliderMin = isProfessional ? 1000 : 50;
-  const sliderMax = isProfessional ? 5000 : 2000;
+  const sliderMax = 10000;
 
   return (
     <div className="max-w-xl mx-auto space-y-8 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
