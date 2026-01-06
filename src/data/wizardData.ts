@@ -69,7 +69,7 @@ export const driveTypeOptions: StepOption<DriveType>[] = [
   },
   {
     value: 'ride-on',
-    label: 'רכיבה',
+    label: 'טרקטורון',
     description: 'לשטחים גדולים מאוד',
     icon: 'Car',
   },
