@@ -143,6 +143,7 @@ const ProductWizard = () => {
                 value={state.powerType} 
                 onChange={(value: PowerType) => updateState('powerType', value)}
                 userType={state.userType}
+                gardenSize={state.gardenSize}
               />
             )}
             {state.currentStep === 4 && (
