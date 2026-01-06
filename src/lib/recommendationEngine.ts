@@ -74,28 +74,36 @@ export function findBestProduct(state: WizardState): RecommendationResult | null
     };
   }
 
-  // Find the product with the closest maxArea to the garden size
-  const sorted = candidates.sort((a, b) => {
-    const aDiff = Math.abs(a.maxArea - gardenSize);
-    const bDiff = Math.abs(b.maxArea - gardenSize);
-    return aDiff - bDiff;
-  });
+  // Filter to only products that can handle the garden size, then find closest
+  const suitable = candidates.filter(p => p.maxArea >= gardenSize);
+  
+  // If no suitable products, return the largest available
+  if (suitable.length === 0) {
+    const largest = candidates.sort((a, b) => b.maxArea - a.maxArea)[0];
+    return {
+      product: largest,
+      matchScore: 70,
+      reason: 'הפתרון הגדול ביותר הזמין בקטגוריה זו',
+    };
+  }
 
+  // Find the product with the closest maxArea (but still >= gardenSize)
+  const sorted = suitable.sort((a, b) => a.maxArea - b.maxArea);
   const bestProduct = sorted[0];
-  const diff = bestProduct.maxArea - gardenSize;
+  const margin = bestProduct.maxArea - gardenSize;
   
   let reason = '';
-  if (Math.abs(diff) <= 100) {
+  if (margin <= 100) {
     reason = 'התאמה מושלמת לגודל הגינה שלך';
-  } else if (diff > 0) {
+  } else if (margin <= 500) {
     reason = 'מתאים מצוין עם יכולת גדילה';
   } else {
-    reason = 'הפתרון הקרוב ביותר לצרכים שלך';
+    reason = 'מתאים לגינה שלך עם מרווח נוח';
   }
 
   return {
     product: bestProduct,
-    matchScore: 100 - Math.min(50, Math.abs(diff) / 100),
+    matchScore: 100 - Math.min(30, margin / 50),
     reason,
   };
 }
