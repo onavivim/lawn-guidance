@@ -48,8 +48,8 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
           text,
           url: recommendation?.products[0]?.link 
         });
-      } catch (err) {
-        console.log('Share cancelled');
+      } catch {
+        // Share was cancelled by user - no action needed
       }
     }
   };
