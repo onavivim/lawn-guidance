@@ -1,7 +1,8 @@
-import { CheckCircle, ArrowLeft, Share2, RefreshCw, ExternalLink } from 'lucide-react';
+import { CheckCircle, Share2, RefreshCw, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
-import { findBestProduct, RecommendationResult } from '@/lib/recommendationEngine';
+import { findBestProducts, RecommendationResult } from '@/lib/recommendationEngine';
+import { Product } from '@/data/products';
 
 interface ResultScreenProps {
   state: WizardState;
@@ -35,17 +36,17 @@ const translateDriveType = (type: DriveType | null) => {
 };
 
 const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
-  const recommendation: RecommendationResult | null = findBestProduct(state);
+  const recommendation: RecommendationResult | null = findBestProducts(state);
 
   const handleShare = async () => {
-    const productName = recommendation?.product.name || 'מכסחת דשא STIGA';
-    const text = `כל גינה והסטיגה שלה! מצאתי את הפתרון המושלם לגינה שלי: ${productName}`;
+    const productNames = recommendation?.products.map(p => p.name).join(', ') || 'מכסחת דשא STIGA';
+    const text = `כל גינה והסטיגה שלה! מצאתי את הפתרון המושלם לגינה שלי: ${productNames}`;
     if (navigator.share) {
       try {
         await navigator.share({ 
           title: 'STIGA - כל גינה והסטיגה שלה!', 
           text,
-          url: recommendation?.product.link 
+          url: recommendation?.products[0]?.link 
         });
       } catch (err) {
         console.log('Share cancelled');
@@ -53,10 +54,8 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
     }
   };
 
-  const handleViewProduct = () => {
-    if (recommendation?.product.link) {
-      window.open(recommendation.product.link, '_blank', 'noopener,noreferrer');
-    }
+  const handleViewProduct = (product: Product) => {
+    window.open(product.link, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -90,18 +89,31 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
             </p>
           )}
 
-          {/* Product Recommendation */}
+          {/* Product Recommendations */}
           {recommendation && (
-            <div className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 mb-8">
-              <p className="text-sm text-muted-foreground mb-2 text-center">הפתרון המומלץ לגינה שלך</p>
-              <h3 className="text-xl md:text-2xl font-bold text-center text-primary mb-3">
-                {recommendation.product.name}
-              </h3>
-              <div className="flex justify-center gap-4 text-sm text-muted-foreground">
-                <span>עד {recommendation.product.maxArea} מ"ר</span>
-                <span>•</span>
-                <span>{translatePowerType(recommendation.product.powerType as PowerType)}</span>
-              </div>
+            <div className="space-y-3 mb-8">
+              <p className="text-sm text-muted-foreground text-center">הפתרון המומלץ לגינה שלך</p>
+              {recommendation.products.map((product, index) => (
+                <div 
+                  key={index}
+                  onClick={() => handleViewProduct(product)}
+                  className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary/40 transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-xl md:text-2xl font-bold text-primary mb-2 group-hover:underline">
+                        {product.name}
+                      </h3>
+                      <div className="flex gap-4 text-sm text-muted-foreground">
+                        <span>עד {product.maxArea} מ"ר</span>
+                        <span>•</span>
+                        <span>{translatePowerType(product.powerType as PowerType)}</span>
+                      </div>
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
@@ -115,16 +127,6 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              variant="cta" 
-              size="lg" 
-              className="flex-1"
-              onClick={handleViewProduct}
-              disabled={!recommendation}
-            >
-              <ExternalLink className="w-5 h-5" />
-              צפה במוצר באתר
-            </Button>
             <Button variant="outline" size="lg" onClick={handleShare}>
               <Share2 className="w-5 h-5" />
               שתף

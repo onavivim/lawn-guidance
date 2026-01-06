@@ -2,8 +2,7 @@ import { WizardState, PowerType, DriveType } from '@/types/wizard';
 import { products, Product } from '@/data/products';
 
 export interface RecommendationResult {
-  product: Product;
-  matchScore: number;
+  products: Product[];
   reason: string;
 }
 
@@ -23,7 +22,7 @@ const driveTypeMapping: Record<DriveType, Product['driveType'][]> = {
   'ride-on': ['ride-on'],
 };
 
-export function findBestProduct(state: WizardState): RecommendationResult | null {
+export function findBestProducts(state: WizardState): RecommendationResult | null {
   const { userType, gardenSize, powerType, driveType } = state;
   
   if (!userType || !gardenSize || !powerType || !driveType) {
@@ -35,23 +34,18 @@ export function findBestProduct(state: WizardState): RecommendationResult | null
 
   // Filter products by user type, power type, and drive type
   let candidates = products.filter(product => {
-    // Check user type
     const productUserType: string = product.userType;
     const userTypeMatch = productUserType === 'both' || 
       (userType === 'homeowner' && productUserType === 'homeowner') ||
       (userType === 'professional' && (productUserType === 'professional' || productUserType === 'both'));
     
-    // Check power type
     const powerTypeMatch = allowedPowerTypes.includes(product.powerType);
-    
-    // Check drive type
     const driveTypeMatch = allowedDriveTypes.includes(product.driveType);
     
     return userTypeMatch && powerTypeMatch && driveTypeMatch;
   });
 
   if (candidates.length === 0) {
-    // Fallback: try to find any product that matches power and drive type
     candidates = products.filter(product => {
       const powerTypeMatch = allowedPowerTypes.includes(product.powerType);
       const driveTypeMatch = allowedDriveTypes.includes(product.driveType);
@@ -60,50 +54,37 @@ export function findBestProduct(state: WizardState): RecommendationResult | null
   }
 
   if (candidates.length === 0) {
-    // Last fallback: any product that can handle the garden size
     candidates = products.filter(product => product.maxArea >= gardenSize);
   }
 
   if (candidates.length === 0) {
-    // If still no candidates, return the largest capacity product
     const sortedByArea = [...products].sort((a, b) => b.maxArea - a.maxArea);
     return {
-      product: sortedByArea[0],
-      matchScore: 50,
+      products: [sortedByArea[0]],
       reason: 'המוצר הגדול ביותר שלנו לשטחים מאתגרים',
     };
   }
 
-  // Filter to only products that can handle the garden size, then find closest
+  // Filter to only products that can handle the garden size
   const suitable = candidates.filter(p => p.maxArea >= gardenSize);
   
-  // If no suitable products, return the largest available
   if (suitable.length === 0) {
     const largest = candidates.sort((a, b) => b.maxArea - a.maxArea)[0];
     return {
-      product: largest,
-      matchScore: 70,
+      products: [largest],
       reason: 'הפתרון הגדול ביותר הזמין בקטגוריה זו',
     };
   }
 
-  // Find the product with the closest maxArea (but still >= gardenSize)
+  // Sort by closest maxArea (smallest that fits)
   const sorted = suitable.sort((a, b) => a.maxArea - b.maxArea);
-  const bestProduct = sorted[0];
-  const margin = bestProduct.maxArea - gardenSize;
   
-  let reason = '';
-  if (margin <= 100) {
-    reason = 'התאמה מושלמת לגודל הגינה שלך';
-  } else if (margin <= 500) {
-    reason = 'מתאים מצוין עם יכולת גדילה';
-  } else {
-    reason = 'מתאים לגינה שלך עם מרווח נוח';
-  }
+  const reason = sorted.length > 1 
+    ? 'הפתרונות המתאימים ביותר לגינה שלך'
+    : 'התאמה מושלמת לגודל הגינה שלך';
 
   return {
-    product: bestProduct,
-    matchScore: 100 - Math.min(30, margin / 50),
+    products: sorted,
     reason,
   };
 }
