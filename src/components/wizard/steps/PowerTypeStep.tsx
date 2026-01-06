@@ -19,18 +19,34 @@ interface PowerTypeStepProps {
   value: PowerType | null;
   onChange: (value: PowerType) => void;
   userType: UserType | null;
+  gardenSize: number | null;
 }
 
-const PowerTypeStep = ({ value, onChange, userType }: PowerTypeStepProps) => {
+const PowerTypeStep = ({ value, onChange, userType, gardenSize }: PowerTypeStepProps) => {
   const isProfessional = userType === 'professional';
+  const isLargeGarden = gardenSize !== null && gardenSize >= 1200;
   
-  // Filter options for professionals (remove electric and manual)
-  const availableOptions = isProfessional 
-    ? powerTypeOptions.filter(opt => opt.value !== 'electric' && opt.value !== 'manual')
-    : powerTypeOptions;
+  // Filter options based on user type and garden size
+  let availableOptions = powerTypeOptions;
+  
+  // Professional filtering (remove electric and manual)
+  if (isProfessional) {
+    availableOptions = availableOptions.filter(opt => opt.value !== 'electric' && opt.value !== 'manual');
+  }
+  
+  // Large garden filtering (remove electric and manual)
+  if (isLargeGarden) {
+    availableOptions = availableOptions.filter(opt => opt.value !== 'electric' && opt.value !== 'manual');
+  }
+
+  const getGridClass = () => {
+    const count = availableOptions.length;
+    if (count === 2) return 'lg:grid-cols-2 max-w-2xl';
+    return 'lg:grid-cols-4 max-w-4xl';
+  };
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${isProfessional ? 'lg:grid-cols-2 max-w-2xl' : 'lg:grid-cols-4 max-w-4xl'} gap-4 mx-auto`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${getGridClass()} gap-4 mx-auto`}>
       {availableOptions.map((option, index) => (
         <OptionCard
           key={option.value}
