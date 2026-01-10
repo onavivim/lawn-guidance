@@ -6,7 +6,7 @@ const Index = () => {
     <>
       <Helmet>
         <html lang="he" dir="rtl" />
-        <title>STIGA - כל גינה והסטיגה שלה!</title>
+        <title>STIGA - לכל דשא יש Stiga משלו</title>
         <meta name="description" content="מצא את הפתרון המושלם לגינה שלך - STIGA מתאימה לך את הפתרון האידיאלי לכל סוג גינה בכמה צעדים פשוטים" />
         <meta name="keywords" content="מכסחת דשא, STIGA, גינה, פתרון לגינה, מכסחה רובוטית, מכסחה חשמלית" />
       </Helmet>

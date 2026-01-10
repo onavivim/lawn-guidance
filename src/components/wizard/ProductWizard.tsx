@@ -86,10 +86,12 @@ const ProductWizard = () => {
           <img 
             src={stigaLogo} 
             alt="STIGA" 
-            className="h-20 md:h-24 mb-2"
+            className="h-16 md:h-20 mb-3"
           />
-          <p className="text-lg md:text-xl font-medium text-foreground/80">
-            כל גינה והסטיגה שלה!
+          <p className="text-lg md:text-xl font-medium text-foreground/80 flex items-center gap-2">
+            לכל דשא יש
+            <img src={stigaLogo} alt="Stiga" className="h-6 md:h-7 inline-block" />
+            משלו
           </p>
         </div>
       </header>
