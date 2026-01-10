@@ -81,16 +81,11 @@ const ProductWizard = () => {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
       
       {/* Header */}
-      <header className="relative pt-6 pb-4 px-4">
-        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center">
-          <img 
-            src={stigaLogo} 
-            alt="STIGA" 
-            className="h-16 md:h-20 mb-3"
-          />
-          <p className="text-lg md:text-xl font-medium text-foreground/80 flex items-center gap-2">
+      <header className="relative pt-8 pb-6 px-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-center">
+          <p className="text-2xl md:text-4xl font-bold text-foreground flex items-center gap-3">
             לכל דשא יש
-            <img src={stigaLogo} alt="Stiga" className="h-6 md:h-7 inline-block" />
+            <img src={stigaLogo} alt="Stiga" className="h-8 md:h-12 inline-block" />
             משלו
           </p>
         </div>
