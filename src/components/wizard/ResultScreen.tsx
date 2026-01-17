@@ -94,14 +94,16 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
             <div className="space-y-3 mb-8">
               <p className="text-sm text-muted-foreground text-center">הפתרון המומלץ לגינה שלך</p>
               {recommendation.products.map((product, index) => (
-                <div 
+                <a 
                   key={index}
-                  onClick={() => handleViewProduct(product)}
-                  className="bg-secondary/50 backdrop-blur-sm border border-primary/20 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary/40 transition-all group"
+                  href={product.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-secondary/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary transition-all group shadow-md hover:shadow-lg"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h3 className="text-xl md:text-2xl font-bold text-primary mb-2 group-hover:underline">
+                      <h3 className="text-xl md:text-2xl font-bold text-primary mb-2 underline underline-offset-4 decoration-primary/50 group-hover:decoration-primary">
                         {product.name}
                       </h3>
                       <div className="flex gap-4 text-sm text-muted-foreground">
@@ -110,9 +112,12 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
                         <span>{translatePowerType(product.powerType as PowerType)}</span>
                       </div>
                     </div>
-                    <ExternalLink className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex items-center gap-2 text-primary">
+                      <span className="text-sm font-medium hidden sm:inline">לצפייה באתר</span>
+                      <ExternalLink className="w-5 h-5" />
+                    </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           )}
