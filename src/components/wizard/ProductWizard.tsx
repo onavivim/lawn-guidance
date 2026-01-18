@@ -68,6 +68,18 @@ const ProductWizard = () => {
     setState(prev => ({ ...prev, [key]: value }));
   };
 
+  const updateStateAndAdvance = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
+    setState(prev => ({ ...prev, [key]: value }));
+    // Auto-advance after a short delay for visual feedback
+    setTimeout(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setState(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
+        setIsTransitioning(false);
+      }, 200);
+    }, 150);
+  };
+
   // Show results
   if (state.currentStep > TOTAL_STEPS) {
     return <ResultScreen state={state} onRestart={handleRestart} />;
@@ -125,7 +137,7 @@ const ProductWizard = () => {
             {state.currentStep === 1 && (
               <UserTypeStep 
                 value={state.userType} 
-                onChange={(value: UserType) => updateState('userType', value)} 
+                onChange={(value: UserType) => updateStateAndAdvance('userType', value)} 
               />
             )}
             {state.currentStep === 2 && (
@@ -138,7 +150,7 @@ const ProductWizard = () => {
             {state.currentStep === 3 && (
               <PowerTypeStep 
                 value={state.powerType} 
-                onChange={(value: PowerType) => updateState('powerType', value)}
+                onChange={(value: PowerType) => updateStateAndAdvance('powerType', value)}
                 userType={state.userType}
                 gardenSize={state.gardenSize}
               />
@@ -146,7 +158,7 @@ const ProductWizard = () => {
             {state.currentStep === 4 && (
               <DriveTypeStep 
                 value={state.driveType} 
-                onChange={(value: DriveType) => updateState('driveType', value)}
+                onChange={(value: DriveType) => updateStateAndAdvance('driveType', value)}
                 userType={state.userType}
                 powerType={state.powerType}
               />
