@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Product } from '@/data/products';
 
-const SHEET_ID = '1eilEnIOreCmJ5sjDV3zvylr3N9yBQPxmpRFOCB1W0vI';
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpJsMkEY3f_0z4eacnAXQ8CQDiAiZahmydbwYN5LPT-PudNw959p5rLCmRxpJIAD1Va4dv3DynofQ2/pub?output=csv';
 
 // Map Hebrew values to English types
 const userTypeMap: Record<string, Product['userType']> = {
