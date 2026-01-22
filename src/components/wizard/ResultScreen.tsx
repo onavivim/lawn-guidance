@@ -1,8 +1,9 @@
-import { CheckCircle, Share2, RefreshCw, ExternalLink } from 'lucide-react';
+import { CheckCircle, Share2, RefreshCw, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
 import { findBestProducts, RecommendationResult } from '@/lib/recommendationEngine';
 import { Product } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 
 interface ResultScreenProps {
   state: WizardState;
@@ -36,7 +37,8 @@ const translateDriveType = (type: DriveType | null) => {
 };
 
 const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
-  const recommendation: RecommendationResult | null = findBestProducts(state);
+  const { products, isLoading, error } = useProducts();
+  const recommendation: RecommendationResult | null = findBestProducts(state, products);
 
   const handleShare = async () => {
     const productNames = recommendation?.products.map(p => p.name).join(', ') || 'מכסחת דשא STIGA';
@@ -54,9 +56,27 @@ const ResultScreen = ({ state, onRestart }: ResultScreenProps) => {
     }
   };
 
-  const handleViewProduct = (product: Product) => {
-    window.open(product.link, '_blank', 'noopener,noreferrer');
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-lg text-muted-foreground">טוען מוצרים...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        <div className="text-center">
+          <p className="text-lg text-destructive mb-4">שגיאה בטעינת המוצרים</p>
+          <Button onClick={onRestart}>נסה שנית</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">

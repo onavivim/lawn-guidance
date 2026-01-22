@@ -1,5 +1,5 @@
 import { WizardState, PowerType, DriveType } from '@/types/wizard';
-import { products, Product } from '@/data/products';
+import { Product } from '@/data/products';
 
 export interface RecommendationResult {
   products: Product[];
@@ -22,10 +22,14 @@ const driveTypeMapping: Record<DriveType, Product['driveType'][]> = {
   'ride-on': ['ride-on'],
 };
 
-export function findBestProducts(state: WizardState): RecommendationResult | null {
+export function findBestProducts(state: WizardState, products: Product[]): RecommendationResult | null {
   const { userType, gardenSize, powerType, driveType } = state;
   
   if (!userType || !gardenSize || !powerType || !driveType) {
+    return null;
+  }
+
+  if (products.length === 0) {
     return null;
   }
 
@@ -92,6 +96,7 @@ export function findBestProducts(state: WizardState): RecommendationResult | nul
 export function getAlternativeProducts(
   state: WizardState, 
   excludeProduct: Product, 
+  products: Product[],
   limit: number = 2
 ): Product[] {
   const { userType, gardenSize, powerType, driveType } = state;
