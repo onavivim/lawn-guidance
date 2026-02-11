@@ -49,6 +49,7 @@ export function findBestProducts(state: WizardState, products: Product[]): Recom
     return userTypeMatch && powerTypeMatch && driveTypeMatch;
   });
 
+  // Fallback 1: relax user type but keep power + drive
   if (candidates.length === 0) {
     candidates = products.filter(product => {
       const powerTypeMatch = allowedPowerTypes.includes(product.powerType);
@@ -57,6 +58,20 @@ export function findBestProducts(state: WizardState, products: Product[]): Recom
     });
   }
 
+  // Fallback 2: relax power type but keep drive type
+  if (candidates.length === 0) {
+    candidates = products.filter(product => {
+      const driveTypeMatch = allowedDriveTypes.includes(product.driveType);
+      return driveTypeMatch && product.maxArea >= gardenSize;
+    });
+  }
+
+  // Fallback 3: only drive type
+  if (candidates.length === 0) {
+    candidates = products.filter(product => allowedDriveTypes.includes(product.driveType));
+  }
+
+  // Fallback 4: area-based with drive type
   if (candidates.length === 0) {
     candidates = products.filter(product => product.maxArea >= gardenSize);
   }
