@@ -64,6 +64,14 @@ const ProductWizard = () => {
     }, 200);
   };
 
+  const handleChangeSelection = (powerType: PowerType, driveType: DriveType) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setState(prev => ({ ...prev, powerType, driveType, currentStep: TOTAL_STEPS + 1 }));
+      setIsTransitioning(false);
+    }, 200);
+  };
+
   const updateState = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
     setState(prev => ({ ...prev, [key]: value }));
   };
@@ -82,7 +90,7 @@ const ProductWizard = () => {
 
   // Show results
   if (state.currentStep > TOTAL_STEPS) {
-    return <ResultScreen state={state} onRestart={handleRestart} />;
+    return <ResultScreen state={state} onRestart={handleRestart} onChangeSelection={handleChangeSelection} />;
   }
 
   return (
