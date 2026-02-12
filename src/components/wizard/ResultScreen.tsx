@@ -191,36 +191,60 @@ const ResultScreen = ({ state, onRestart, onChangeSelection }: ResultScreenProps
             </p>
           )}
 
-          {/* Product Recommendations */}
-          {recommendation && (
-            <div className="space-y-3 mb-8">
-              <p className="text-sm text-muted-foreground text-center">הפתרון המומלץ לגינה שלך</p>
-              {recommendation.products.map((product, index) => (
-                <a 
-                  key={index}
-                  href={product.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-secondary/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary transition-all group shadow-md hover:shadow-lg"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl md:text-2xl font-bold text-primary mb-2 underline underline-offset-4 decoration-primary/50 group-hover:decoration-primary">
-                        {product.name}
-                      </h3>
-                      <div className="flex gap-4 text-sm text-muted-foreground">
-                        <span>עד {product.maxArea} מ"ר</span>
-                        <span>•</span>
-                        <span>{translatePowerType(product.powerType as PowerType)}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-primary">
-                      <span className="text-sm font-medium hidden sm:inline">לצפייה באתר</span>
-                      <ExternalLink className="w-5 h-5" />
+          {/* Primary Recommendation */}
+          {recommendation && recommendation.products.length > 0 && (
+            <div className="mb-8">
+              <p className="text-sm text-muted-foreground text-center mb-3">הפתרון המומלץ לגינה שלך</p>
+              <a 
+                href={recommendation.products[0].link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-secondary/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary transition-all group shadow-md hover:shadow-lg"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-xl md:text-2xl font-bold text-primary mb-2 underline underline-offset-4 decoration-primary/50 group-hover:decoration-primary">
+                      {recommendation.products[0].name}
+                    </h3>
+                    <div className="flex gap-4 text-sm text-muted-foreground">
+                      <span>עד {recommendation.products[0].maxArea} מ"ר</span>
+                      <span>•</span>
+                      <span>{translatePowerType(recommendation.products[0].powerType as PowerType)}</span>
                     </div>
                   </div>
-                </a>
-              ))}
+                  <div className="flex items-center gap-2 text-primary">
+                    <span className="text-sm font-medium hidden sm:inline">לצפייה באתר</span>
+                    <ExternalLink className="w-5 h-5" />
+                  </div>
+                </div>
+              </a>
+            </div>
+          )}
+
+          {/* Other Options */}
+          {recommendation && recommendation.products.length > 1 && (
+            <div className="mb-8">
+              <p className="text-xs text-muted-foreground text-center mb-2">אפשרויות נוספות</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {recommendation.products.slice(1).map((product, index) => (
+                  <a 
+                    key={index}
+                    href={product.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-secondary/30 backdrop-blur-sm border border-border rounded-lg p-3 cursor-pointer hover:bg-secondary/50 hover:border-primary/30 transition-all group"
+                  >
+                    <h4 className="text-sm font-semibold text-primary mb-1 underline underline-offset-2 decoration-primary/40 group-hover:decoration-primary">
+                      {product.name}
+                    </h4>
+                    <div className="flex gap-2 text-xs text-muted-foreground">
+                      <span>עד {product.maxArea} מ"ר</span>
+                      <span>•</span>
+                      <span>{translatePowerType(product.powerType as PowerType)}</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
           )}
 
