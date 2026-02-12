@@ -128,7 +128,7 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
         "grid gap-4",
         availablePresets.length === 1 ? "grid-cols-1 max-w-xs mx-auto" : "grid-cols-3"
       )}>
-        {availablePresets.map((preset, idx) => {
+        {[...availablePresets].reverse().map((preset, idx) => {
           const originalIndex = gardenSizePresets.indexOf(preset);
           return (
             <Button
