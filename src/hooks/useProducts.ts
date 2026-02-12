@@ -14,7 +14,9 @@ const userTypeMap: Record<string, Product['userType']> = {
 const powerTypeMap: Record<string, Product['powerType']> = {
   'בנזין': 'petrol',
   'סוללה': 'battery',
+  'נטען': 'battery',
   'חשמל': 'electric',
+  'חשמלי': 'electric',
   'ידני': 'manual',
 };
 
