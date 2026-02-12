@@ -18,6 +18,33 @@ interface GardenSizeStepProps {
   userType: UserType | null;
 }
 
+// Non-linear slider mapping:
+// Slider positions 0-80 map to 50-2000 (step 50), positions 80-100 map to 2000-10000 (step 1000)
+const SLIDER_BREAK = 80; // slider position where we switch from fine to coarse
+const VALUE_BREAK = 2000; // actual value at the break point
+
+function sliderToValue(pos: number, min: number): number {
+  if (pos <= SLIDER_BREAK) {
+    // Linear from min to VALUE_BREAK
+    const ratio = pos / SLIDER_BREAK;
+    const val = min + ratio * (VALUE_BREAK - min);
+    return Math.round(val / 50) * 50; // snap to 50
+  } else {
+    // Linear from VALUE_BREAK to 10000
+    const ratio = (pos - SLIDER_BREAK) / (100 - SLIDER_BREAK);
+    const val = VALUE_BREAK + ratio * (10000 - VALUE_BREAK);
+    return Math.round(val / 1000) * 1000; // snap to 1000
+  }
+}
+
+function valueToSlider(val: number, min: number): number {
+  if (val <= VALUE_BREAK) {
+    return ((val - min) / (VALUE_BREAK - min)) * SLIDER_BREAK;
+  } else {
+    return SLIDER_BREAK + ((val - VALUE_BREAK) / (10000 - VALUE_BREAK)) * (100 - SLIDER_BREAK);
+  }
+}
+
 const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
   const isProfessional = userType === 'professional';
   
@@ -29,6 +56,7 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
   const availablePresetIndices = isProfessional ? [2] : [0, 1, 2]; // Indices in original array
   
   const defaultValue = isProfessional ? 1500 : 300;
+  const sliderMin = isProfessional ? 1000 : 50;
   const [localValue, setLocalValue] = useState(value || defaultValue);
   const [activePreset, setActivePreset] = useState<number | null>(null);
 
@@ -50,9 +78,10 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
   }, [isProfessional, value, onChange, defaultValue]);
 
   const handleSliderChange = (values: number[]) => {
-    setLocalValue(values[0]);
+    const actualValue = sliderToValue(values[0], sliderMin);
+    setLocalValue(actualValue);
     setActivePreset(null);
-    onChange(values[0]);
+    onChange(actualValue);
   };
 
   const handlePresetClick = (preset: typeof gardenSizePresets[0], originalIndex: number) => {
@@ -62,11 +91,10 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
   };
 
   const getDisplaySize = () => {
-    return `${localValue} מ"ר`;
+    return `${localValue.toLocaleString()} מ"ר`;
   };
 
-  const sliderMin = isProfessional ? 1000 : 50;
-  const sliderMax = 10000;
+  const sliderPosition = valueToSlider(localValue, sliderMin);
 
   return (
     <div className="max-w-xl mx-auto space-y-8 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
@@ -82,16 +110,16 @@ const GardenSizeStep = ({ value, onChange, userType }: GardenSizeStepProps) => {
       {/* Slider */}
       <div className="px-4" dir="ltr">
         <Slider
-          value={[localValue]}
+          value={[sliderPosition]}
           onValueChange={handleSliderChange}
-          min={sliderMin}
-          max={sliderMax}
-          step={50}
+          min={0}
+          max={100}
+          step={0.5}
           className="w-full"
         />
         <div className="flex justify-between mt-2 text-sm text-muted-foreground">
           <span>{sliderMin} מ"ר</span>
-          <span>{sliderMax} מ"ר</span>
+          <span>10,000 מ"ר</span>
         </div>
       </div>
 
