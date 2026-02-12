@@ -61,11 +61,17 @@ function findAlternatives(gardenSize: number, products: Product[], currentPower:
     for (const pt of allPowerTypes) {
       if (dt === currentDrive && pt === currentPower) continue;
       
-      const matching = products.filter(p => 
+      // Only suggest combos that actually exist in the product catalog
+      const allProductsForCombo = products.filter(p => 
         driveTypeMapping[dt].includes(p.driveType) &&
-        powerTypeMapping[pt].includes(p.powerType) &&
-        p.maxArea >= gardenSize
+        powerTypeMapping[pt].includes(p.powerType)
       );
+      
+      // Skip if no products exist at all for this combo
+      if (allProductsForCombo.length === 0) continue;
+      
+      // Only suggest if there are products that can handle the garden size
+      const matching = allProductsForCombo.filter(p => p.maxArea >= gardenSize);
       
       if (matching.length > 0) {
         const maxArea = Math.max(...matching.map(p => p.maxArea));
