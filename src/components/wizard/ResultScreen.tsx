@@ -234,6 +234,7 @@ const ResultScreen = ({ state, onRestart, onChangeSelection }: ResultScreenProps
                     href={product.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackProductClick(product.name, 'secondary')}
                     className="block bg-secondary/30 backdrop-blur-sm border border-border rounded-lg p-3 cursor-pointer hover:bg-secondary/50 hover:border-primary/30 transition-all group"
                   >
                     <h4 className="text-sm font-semibold text-primary mb-1 underline underline-offset-2 decoration-primary/40 group-hover:decoration-primary">
