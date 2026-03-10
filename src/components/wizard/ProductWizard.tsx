@@ -95,6 +95,7 @@ const ProductWizard = () => {
 
   const updateState = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
     setState(prev => ({ ...prev, [key]: value }));
+    trackSelection(state.currentStep, stepNames[state.currentStep - 1], String(key), String(value));
   };
 
   const updateStateAndAdvance = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
