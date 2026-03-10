@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
-import { stepTitles, stepDescriptions } from '@/data/wizardData';
+import { stepTitles, stepDescriptions, stepNames } from '@/data/wizardData';
 import WizardProgress from './WizardProgress';
 import UserTypeStep from './steps/UserTypeStep';
 import GardenSizeStep from './steps/GardenSizeStep';
@@ -11,6 +11,7 @@ import DriveTypeStep from './steps/DriveTypeStep';
 import ResultScreen from './ResultScreen';
 import { cn } from '@/lib/utils';
 import stigaLogo from '@/assets/stiga-logo.png';
+import { trackStepView, trackSelection, trackWizardComplete, trackRestart, trackDropOff, markWizardCompleted, resetWizardCompletion } from '@/lib/analytics';
 
 const TOTAL_STEPS = 4;
 
