@@ -100,6 +100,20 @@ const ProductWizard = () => {
 
   const updateStateAndAdvance = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
     setState(prev => ({ ...prev, [key]: value }));
+    trackSelection(state.currentStep, stepNames[state.currentStep - 1], String(key), String(value));
+    
+    // Check if this is the last step - track completion
+    if (state.currentStep === TOTAL_STEPS) {
+      const finalSelections = { ...state, [key]: value };
+      markWizardCompleted();
+      trackWizardComplete({
+        user_type: finalSelections.userType,
+        garden_size: finalSelections.gardenSize,
+        power_type: finalSelections.powerType,
+        drive_type: value,
+      });
+    }
+    
     // Auto-advance after a short delay for visual feedback
     setTimeout(() => {
       setIsTransitioning(true);
