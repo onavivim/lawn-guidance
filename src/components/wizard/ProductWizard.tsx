@@ -27,6 +27,24 @@ const ProductWizard = () => {
   const [state, setState] = useState<WizardState>(initialState);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Track step views
+  useEffect(() => {
+    if (state.currentStep <= TOTAL_STEPS) {
+      trackStepView(state.currentStep, stepNames[state.currentStep - 1]);
+    }
+  }, [state.currentStep]);
+
+  // Track drop-off on page unload
+  useEffect(() => {
+    const handleUnload = () => {
+      if (state.currentStep <= TOTAL_STEPS) {
+        trackDropOff(state.currentStep, stepNames[state.currentStep - 1]);
+      }
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [state.currentStep]);
+
   const canProceed = useCallback(() => {
     switch (state.currentStep) {
       case 1: return state.userType !== null;
