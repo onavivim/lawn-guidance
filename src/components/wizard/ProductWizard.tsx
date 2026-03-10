@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
-import { stepTitles, stepDescriptions } from '@/data/wizardData';
+import { stepTitles, stepDescriptions, stepNames } from '@/data/wizardData';
 import WizardProgress from './WizardProgress';
 import UserTypeStep from './steps/UserTypeStep';
 import GardenSizeStep from './steps/GardenSizeStep';
@@ -11,6 +11,7 @@ import DriveTypeStep from './steps/DriveTypeStep';
 import ResultScreen from './ResultScreen';
 import { cn } from '@/lib/utils';
 import stigaLogo from '@/assets/stiga-logo.png';
+import { trackStepView, trackSelection, trackWizardComplete, trackRestart, trackDropOff, markWizardCompleted, resetWizardCompletion } from '@/lib/analytics';
 
 const TOTAL_STEPS = 4;
 
@@ -26,6 +27,24 @@ const ProductWizard = () => {
   const [state, setState] = useState<WizardState>(initialState);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Track step views
+  useEffect(() => {
+    if (state.currentStep <= TOTAL_STEPS) {
+      trackStepView(state.currentStep, stepNames[state.currentStep - 1]);
+    }
+  }, [state.currentStep]);
+
+  // Track drop-off on page unload
+  useEffect(() => {
+    const handleUnload = () => {
+      if (state.currentStep <= TOTAL_STEPS) {
+        trackDropOff(state.currentStep, stepNames[state.currentStep - 1]);
+      }
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [state.currentStep]);
+
   const canProceed = useCallback(() => {
     switch (state.currentStep) {
       case 1: return state.userType !== null;
@@ -38,6 +57,17 @@ const ProductWizard = () => {
 
   const handleNext = () => {
     if (!canProceed()) return;
+    
+    // Track completion if moving past last step
+    if (state.currentStep === TOTAL_STEPS) {
+      markWizardCompleted();
+      trackWizardComplete({
+        user_type: state.userType,
+        garden_size: state.gardenSize,
+        power_type: state.powerType,
+        drive_type: state.driveType,
+      });
+    }
     
     setIsTransitioning(true);
     setTimeout(() => {
@@ -57,6 +87,8 @@ const ProductWizard = () => {
   };
 
   const handleRestart = () => {
+    trackRestart();
+    resetWizardCompletion();
     setIsTransitioning(true);
     setTimeout(() => {
       setState(initialState);
@@ -74,10 +106,25 @@ const ProductWizard = () => {
 
   const updateState = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
     setState(prev => ({ ...prev, [key]: value }));
+    trackSelection(state.currentStep, stepNames[state.currentStep - 1], String(key), String(value));
   };
 
   const updateStateAndAdvance = <K extends keyof WizardState>(key: K, value: WizardState[K]) => {
     setState(prev => ({ ...prev, [key]: value }));
+    trackSelection(state.currentStep, stepNames[state.currentStep - 1], String(key), String(value));
+    
+    // Check if this is the last step - track completion
+    if (state.currentStep === TOTAL_STEPS) {
+      const finalSelections = { ...state, [key]: value };
+      markWizardCompleted();
+      trackWizardComplete({
+        user_type: finalSelections.userType,
+        garden_size: finalSelections.gardenSize,
+        power_type: finalSelections.powerType,
+        drive_type: value,
+      });
+    }
+    
     // Auto-advance after a short delay for visual feedback
     setTimeout(() => {
       setIsTransitioning(true);

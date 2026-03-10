@@ -75,6 +75,8 @@ export const driveTypeOptions: StepOption<DriveType>[] = [
   },
 ];
 
+export const stepNames = ['user_type', 'garden_size', 'power_type', 'drive_type'];
+
 export const stepTitles = [
   'מי אתה?',
   'מה גודל הגינה?',
