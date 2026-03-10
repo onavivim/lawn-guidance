@@ -76,6 +76,8 @@ const ProductWizard = () => {
   };
 
   const handleRestart = () => {
+    trackRestart();
+    resetWizardCompletion();
     setIsTransitioning(true);
     setTimeout(() => {
       setState(initialState);
