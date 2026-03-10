@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { WizardState, UserType, PowerType, DriveType } from '@/types/wizard';
 import { findBestProducts, RecommendationResult, AlternativeSuggestion } from '@/lib/recommendationEngine';
 import { useProducts } from '@/hooks/useProducts';
+import { trackProductClick } from '@/lib/analytics';
 
 interface ResultScreenProps {
   state: WizardState;
