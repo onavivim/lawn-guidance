@@ -58,6 +58,17 @@ const ProductWizard = () => {
   const handleNext = () => {
     if (!canProceed()) return;
     
+    // Track completion if moving past last step
+    if (state.currentStep === TOTAL_STEPS) {
+      markWizardCompleted();
+      trackWizardComplete({
+        user_type: state.userType,
+        garden_size: state.gardenSize,
+        power_type: state.powerType,
+        drive_type: state.driveType,
+      });
+    }
+    
     setIsTransitioning(true);
     setTimeout(() => {
       setState(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
