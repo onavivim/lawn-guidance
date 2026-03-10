@@ -200,6 +200,7 @@ const ResultScreen = ({ state, onRestart, onChangeSelection }: ResultScreenProps
                 href={recommendation.products[0].link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackProductClick(recommendation.products[0].name, 'primary')}
                 className="block bg-secondary/50 backdrop-blur-sm border-2 border-primary/30 rounded-xl p-6 cursor-pointer hover:bg-secondary/70 hover:border-primary transition-all group shadow-md hover:shadow-lg"
               >
                 <div className="flex items-center justify-between">
